@@ -19,36 +19,29 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             text-align: left;
         }
-.input-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    padding: 5px 10px;
-    background: #fff;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.input-group label {
-    flex: 2;
-    text-align: left;
-    font-weight: bold;
-}
-
-.input-group input {
-    flex: 1;
-    width: 60px;
-    padding: 6px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    text-align: center;
-}
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .input-group label {
+            flex: 3;
+            text-align: left;
+            font-weight: bold;
+        }
+        .input-group input {
+            flex: 1;
+            width: 50px;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
         }
         button {
             background-color: #28a745;
@@ -82,7 +75,7 @@
             overflow: hidden;
         }
         th, td {
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ddd;
             text-align: center;
         }
@@ -142,24 +135,8 @@
 
             document.getElementById("sltTotalDisplay").innerText = `Total SLT Allocated: ${totalSLT} hours`;
 
-            warning.style.display = totalSLT !== maxSLT ? "block" : "none";
-            warning.innerText = totalSLT !== maxSLT ? `Warning: Total SLT should be exactly ${maxSLT} hours!` : "";
-
             let formData = new FormData(document.getElementById("sltForm"));
-            let expectedTotals = [
-                Number(formData.get('synchronous_lecture')) || 0,
-                Number(formData.get('synchronous_activities')) || 0,
-                Number(formData.get('synchronous_assessment')) || 0,
-                Number(formData.get('synchronous_lecture_prep')) || 0,
-                Number(formData.get('synchronous_activities_prep')) || 0,
-                Number(formData.get('synchronous_assessment_prep')) || 0,
-                Number(formData.get('asynchronous_lecture')) || 0,
-                Number(formData.get('asynchronous_activities')) || 0,
-                Number(formData.get('asynchronous_assessment')) || 0,
-                Number(formData.get('asynchronous_lecture_prep')) || 0,
-                Number(formData.get('asynchronous_activities_prep')) || 0,
-                Number(formData.get('asynchronous_assessment_prep')) || 0
-            ];
+            let expectedTotals = Array.from(document.querySelectorAll(".input-group input")).map(input => Number(input.value) || 0);
 
             for (let i = 0; i < 12; i++) {
                 let summaryCell = document.getElementById(`summary-activity${i + 1}`);
@@ -177,7 +154,7 @@
 <body>
     <h1>SLT Calculator</h1>
 
-    <p class="instructions">Select the SLT version and enter the hours for each category.</p>
+    <p class="instructions">Select the SLT version and enter the total hours for each activity type.</p>
     <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
         <label for="slt_type"><strong>Select SLT Version:</strong></label>
         <select name="slt_type">
@@ -185,57 +162,37 @@
             <option value="120">120 Hours</option>
             <option value="160">160 Hours</option>
         </select>
+
+        <div class="slt-container">
+            <div class="input-group">
+                <label>Lecture:</label> <input type="number" name="synchronous_lecture" required>
+            </div>
+            <div class="input-group">
+                <label>Activities:</label> <input type="number" name="synchronous_activities" required>
+            </div>
+            <div class="input-group">
+                <label>Assessment:</label> <input type="number" name="synchronous_assessment" required>
+            </div>
+        </div>
+
         <button type="submit">Calculate</button>
     </form>
 
     <div id="result"></div>
 
     <h2>SLT Weekly Arrangement</h2>
-<p class="instructions">Enter SLT hours for each week. The totals will be calculated automatically.</p>
-<p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
-<p class="warning" id="weekWarning"></p>
+    <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
 
-<!-- Updated Layout for Weekly SLT Entry -->
-<div class="slt-container">
-    <div class="input-group">
-        <label>Lecture:</label> <input type="number" id="lecture" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Activities:</label> <input type="number" id="activities" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Assessment:</label> <input type="number" id="assessment" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Lecture Prep:</label> <input type="number" id="lecture_prep" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Activity Prep:</label> <input type="number" id="activity_prep" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Assessment Prep:</label> <input type="number" id="assessment_prep" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Async Lecture:</label> <input type="number" id="async_lecture" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Async Activities:</label> <input type="number" id="async_activities" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Async Assessment:</label> <input type="number" id="async_assessment" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Async Lecture Prep:</label> <input type="number" id="async_lecture_prep" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Async Activities Prep:</label> <input type="number" id="async_activities_prep" oninput="calculateSLTTotal()" min="0">
-    </div>
-    <div class="input-group">
-        <label>Async Assessment Prep:</label> <input type="number" id="async_assessment_prep" oninput="calculateSLTTotal()" min="0">
-    </div>
-</div>
+    <table>
+        <tr>
+            <th>Week</th>
+            <th colspan="12">SLT Activities (Enter Hours)</th>
+        </tr>
+        <tr id="summaryRow">
+            <td><strong>Total</strong></td>
+        </tr>
+    </table>
 
-
-    <footer>Developed by [Your Name]</footer>
+    <footer>Developed by Rohayati Paidi</footer>
 </body>
 </html>
