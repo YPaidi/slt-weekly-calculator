@@ -122,7 +122,6 @@
             let activityTotals = new Array(12).fill(0);
             let sltType = document.querySelector("select[name='slt_type']").value;
             let maxSLT = sltType === "80" ? 80 : (sltType === "120" ? 120 : 160);
-            let warning = document.getElementById("weekWarning");
 
             for (let i = 1; i <= 15; i++) {
                 for (let j = 1; j <= 12; j++) {
@@ -135,7 +134,6 @@
 
             document.getElementById("sltTotalDisplay").innerText = `Total SLT Allocated: ${totalSLT} hours`;
 
-            let formData = new FormData(document.getElementById("sltForm"));
             let expectedTotals = Array.from(document.querySelectorAll(".input-group input")).map(input => Number(input.value) || 0);
 
             for (let i = 0; i < 12; i++) {
@@ -172,6 +170,11 @@
         <div class="input-group"><label>Lecture:</label> <input type="number" name="asynchronous_lecture" required></div>
         <div class="input-group"><label>Activities:</label> <input type="number" name="asynchronous_activities" required></div>
         <div class="input-group"><label>Assessment:</label> <input type="number" name="asynchronous_assessment" required></div>
+
+        <h2>Preparation Time</h2>
+        <div class="input-group"><label>Lecture Prep:</label> <input type="number" name="synchronous_lecture_prep" required></div>
+        <div class="input-group"><label>Activities Prep:</label> <input type="number" name="synchronous_activities_prep" required></div>
+        <div class="input-group"><label>Assessment Prep:</label> <input type="number" name="synchronous_assessment_prep" required></div>
 
         <button type="submit">Calculate</button>
     </form>
