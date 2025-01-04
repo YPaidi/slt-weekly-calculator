@@ -14,6 +14,31 @@
         h1 {
             color: #333;
         }
+/* Adjust input boxes inside the table */
+input[type="number"] {
+    width: 80%;  /* Reduce width so it fits inside the column */
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Table layout fixes */
+table {
+    width: 100%;
+    table-layout: fixed; /* Ensures equal column distribution */
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    word-wrap: break-word; /* Prevents text from overflowing */
+}
+
         form {
             background: #fff;
             padding: 20px;
