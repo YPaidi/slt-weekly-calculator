@@ -23,23 +23,32 @@
             margin: 0 auto;
             text-align: left;
         }
-        .input-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .input-group label {
-            flex: 1;
-            text-align: left;
-        }
-        .input-group input {
-            width: 80px;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            text-align: center;
+.input-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 5px 10px;
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.input-group label {
+    flex: 2;
+    text-align: left;
+    font-weight: bold;
+}
+
+.input-group input {
+    flex: 1;
+    width: 60px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
         }
         button {
             background-color: #28a745;
@@ -182,21 +191,50 @@
     <div id="result"></div>
 
     <h2>SLT Weekly Arrangement</h2>
-    <p class="instructions">Enter SLT hours for each week. The totals will be calculated automatically.</p>
-    <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
-    <p class="warning" id="weekWarning"></p>
+<p class="instructions">Enter SLT hours for each week. The totals will be calculated automatically.</p>
+<p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
+<p class="warning" id="weekWarning"></p>
 
-    <div class="slt-container">
-        <div class="input-group">
-            <label>Lecture</label> <input type="number" oninput="calculateSLTTotal()" min="0">
-        </div>
-        <div class="input-group">
-            <label>Activities</label> <input type="number" oninput="calculateSLTTotal()" min="0">
-        </div>
-        <div class="input-group">
-            <label>Assessment</label> <input type="number" oninput="calculateSLTTotal()" min="0">
-        </div>
+<!-- Updated Layout for Weekly SLT Entry -->
+<div class="slt-container">
+    <div class="input-group">
+        <label>Lecture:</label> <input type="number" id="lecture" oninput="calculateSLTTotal()" min="0">
     </div>
+    <div class="input-group">
+        <label>Activities:</label> <input type="number" id="activities" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Assessment:</label> <input type="number" id="assessment" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Lecture Prep:</label> <input type="number" id="lecture_prep" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Activity Prep:</label> <input type="number" id="activity_prep" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Assessment Prep:</label> <input type="number" id="assessment_prep" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Async Lecture:</label> <input type="number" id="async_lecture" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Async Activities:</label> <input type="number" id="async_activities" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Async Assessment:</label> <input type="number" id="async_assessment" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Async Lecture Prep:</label> <input type="number" id="async_lecture_prep" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Async Activities Prep:</label> <input type="number" id="async_activities_prep" oninput="calculateSLTTotal()" min="0">
+    </div>
+    <div class="input-group">
+        <label>Async Assessment Prep:</label> <input type="number" id="async_assessment_prep" oninput="calculateSLTTotal()" min="0">
+    </div>
+</div>
+
 
     <footer>Developed by [Your Name]</footer>
 </body>
