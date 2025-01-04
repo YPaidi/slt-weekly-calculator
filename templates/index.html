@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,48 +12,34 @@
             text-align: center;
             padding: 20px;
         }
-        h1, h2 {
+        h1 {
             color: #333;
         }
-        form, .slt-container {
+        form {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 700px;
+            max-width: 500px;
             margin: 0 auto;
-            text-align: left;
         }
-        .input-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .input-group label {
-            flex: 3;
-            text-align: left;
-            font-weight: bold;
-        }
-        .input-group input {
-            flex: 1;
-            width: 80px;
-            padding: 6px;
+        select, input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 14px;
-            text-align: center;
+            font-size: 16px;
         }
         button {
             background-color: #28a745;
             color: white;
-            font-size: 16px;
-            padding: 10px;
+            font-size: 18px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s ease;
-            width: 100%;
         }
         button:hover {
             background-color: #218838;
@@ -66,36 +53,16 @@
             max-width: 500px;
             margin: 20px auto;
         }
-        table {
-            width: 100%;
-            margin: 10px auto;
-            border-collapse: collapse;
-            background: white;
+        img {
+            max-width: 100%;
+            height: auto;
             border-radius: 10px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-        th {
-            background: #333;
-            color: white;
-        }
-        .green-cell {
-            background-color: #28a745;
-            color: white;
+            margin-top: 10px;
         }
         footer {
             margin-top: 20px;
             font-size: 14px;
             color: #666;
-        }
-        .instructions {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 10px;
         }
     </style>
 
@@ -113,48 +80,14 @@
                     "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
                     "<p style='color: red;'>" + data.warning + "</p>" +
                     "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
-
-                document.getElementById("weeklyTableContainer").style.display = "block";
             })
             .catch(error => console.error('Error:', error));
-        }
-
-        function calculateSLTTotal() {
-            let totalSLT = 0;
-            let activityTotals = new Array(12).fill(0);
-            let sltType = document.querySelector("select[name='slt_type']").value;
-            let maxSLT = sltType === "80" ? 80 : (sltType === "120" ? 120 : 160);
-
-            for (let i = 1; i <= 15; i++) {
-                for (let j = 1; j <= 12; j++) {
-                    let input = document.getElementById(`week${i}-activity${j}`);
-                    let value = Number(input.value) || 0;
-                    totalSLT += value;
-                    activityTotals[j - 1] += value;
-                }
-            }
-
-            document.getElementById("sltTotalDisplay").innerText = `Total SLT Allocated: ${totalSLT} hours`;
-
-            let expectedTotals = Array.from(document.querySelectorAll(".input-group input")).map(input => Number(input.value) || 0);
-
-            for (let i = 0; i < 12; i++) {
-                let summaryCell = document.getElementById(`summary-activity${i + 1}`);
-                summaryCell.innerText = activityTotals[i];
-
-                if (activityTotals[i] === expectedTotals[i]) {
-                    summaryCell.classList.add("green-cell");
-                } else {
-                    summaryCell.classList.remove("green-cell");
-                }
-            }
         }
     </script>
 </head>
 <body>
     <h1>SLT Calculator</h1>
 
-    <p class="instructions">Select the SLT version and enter the total hours for each activity type.</p>
     <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
         <label for="slt_type"><strong>Select SLT Version:</strong></label>
         <select name="slt_type">
@@ -163,49 +96,32 @@
             <option value="160">160 Hours</option>
         </select>
 
-        <h2>Synchronous Learning</h2>
-        <div class="input-group"><label>Lecture:</label> <input type="number" name="synchronous_lecture" required></div>
-        <div class="input-group"><label>Activities:</label> <input type="number" name="synchronous_activities" required></div>
-        <div class="input-group"><label>Assessment:</label> <input type="number" name="synchronous_assessment" required></div>
+        <h3>Synchronous Learning</h3>
+        <label>Lecture: <input type="number" name="synchronous_lecture" required></label>
+        <label>Activities: <input type="number" name="synchronous_activities" required></label>
+        <label>Assessment: <input type="number" name="synchronous_assessment" required></label>
 
-        <h2>Asynchronous Learning</h2>
-        <div class="input-group"><label>Lecture:</label> <input type="number" name="asynchronous_lecture" required></div>
-        <div class="input-group"><label>Activities:</label> <input type="number" name="asynchronous_activities" required></div>
-        <div class="input-group"><label>Assessment:</label> <input type="number" name="asynchronous_assessment" required></div>
+        <h3>Asynchronous Learning</h3>
+        <label>Lecture: <input type="number" name="asynchronous_lecture" required></label>
+        <label>Activities: <input type="number" name="asynchronous_activities" required></label>
+        <label>Assessment: <input type="number" name="asynchronous_assessment" required></label>
+
+        <h3>Preparation Time</h3>
+        <label>Synchronous Lecture: <input type="number" name="synchronous_lecture_prep" required></label>
+        <label>Synchronous Activities: <input type="number" name="synchronous_activities_prep" required></label>
+        <label>Synchronous Assessment: <input type="number" name="synchronous_assessment_prep" required></label>
+        
+        <label>Asynchronous Lecture: <input type="number" name="asynchronous_lecture_prep" required></label>
+        <label>Asynchronous Activities: <input type="number" name="asynchronous_activities_prep" required></label>
+        <label>Asynchronous Assessment: <input type="number" name="asynchronous_assessment_prep" required></label>
 
         <button type="submit">Calculate</button>
     </form>
 
     <div id="result"></div>
 
-    <div id="weeklyTableContainer" style="display:none;">
-        <h2>SLT Weekly Arrangement</h2>
-        <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
-
-        <table>
-            <tr>
-                <th>Week</th>
-                <th colspan="12">SLT Activities (Enter Hours)</th>
-            </tr>
-            <tr>
-                <th></th>
-                <th>Lecture</th>
-                <th>Activities</th>
-                <th>Assessment</th>
-                <th>Lecture Prep</th>
-                <th>Activity Prep</th>
-                <th>Assessment Prep</th>
-                <th>Async Lecture</th>
-                <th>Async Activities</th>
-                <th>Async Assessment</th>
-                <th>Async Lecture Prep</th>
-                <th>Async Activities Prep</th>
-                <th>Async Assessment Prep</th>
-            </tr>
-            <tbody id="weeklyTable"></tbody>
-        </table>
-    </div>
-
-    <footer>Developed by Rohayati Paidi</footer>
+<footer>
+    <p>Developed by [Rohayati Paidi]</p>
+</footer>
 </body>
 </html>
