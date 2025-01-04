@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLT Calculator</title>
@@ -48,41 +47,36 @@
         button:hover {
             background-color: #218838;
         }
-        .section-title {
-            font-weight: bold;
-            margin-top: 10px;
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            table-layout: fixed;
         }
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .form-group label {
-            width: 60%;
-        }
-        .form-group input {
-            width: 35%;
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
             text-align: center;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+        }
+        input[type="number"] {
+            width: 60px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
         }
     </style>
-
-    <script>
-        function submitForm() {
-            let formData = new FormData(document.getElementById("sltForm"));
-            fetch("/", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("result").innerHTML = 
-                    "<h2>Results</h2>" +
-                    "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
-                    "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
 </head>
 <body>
     <h1>SLT Calculator</h1>
@@ -96,7 +90,6 @@
                 <option value="120">120 Hours</option>
                 <option value="160">160 Hours</option>
             </select>
-
             <div class="section-title">Synchronous Learning</div>
             <div class="form-group">
                 <label>Lecture:</label> 
@@ -110,7 +103,6 @@
                 <label>Assessment:</label> 
                 <input type="number" name="synchronous_assessment" required>
             </div>
-
             <div class="section-title">Asynchronous Learning</div>
             <div class="form-group">
                 <label>Lecture:</label> 
@@ -124,38 +116,9 @@
                 <label>Assessment:</label> 
                 <input type="number" name="asynchronous_assessment" required>
             </div>
-
-            <div class="section-title">Preparation Time</div>
-            <div class="form-group">
-                <label>Synchronous Lecture:</label> 
-                <input type="number" name="synchronous_lecture_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Synchronous Activities:</label> 
-                <input type="number" name="synchronous_activities_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Synchronous Assessment:</label> 
-                <input type="number" name="synchronous_assessment_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Asynchronous Lecture:</label> 
-                <input type="number" name="asynchronous_lecture_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Asynchronous Activities:</label> 
-                <input type="number" name="asynchronous_activities_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Asynchronous Assessment:</label> 
-                <input type="number" name="asynchronous_assessment_prep" required>
-            </div>
-
             <button type="submit">Calculate</button>
         </form>
     </div>
-
-    <div id="result"></div>
 
     <h2>SLT Weekly Arrangement</h2>
     <table>
@@ -174,45 +137,15 @@
             <th>Async Activities Prep</th>
             <th>Async Assessment Prep</th>
         </tr>
-
-table {
-    width: 100%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    table-layout: fixed; /* Ensures equal column width */
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    word-wrap: break-word; /* Prevents overflow */
-    font-size: 14px; /* Adjusts font size */
-}
-
-th {
-    background-color: #007bff;
-    color: white;
-    font-size: 14px;
-}
-
-<th style="width: 8%;">Week</th>
-<th style="width: 8%;">Lecture</th>
-<th style="width: 8%;">Activities</th>
-<th style="width: 8%;">Assessment</th>
-<th style="width: 8%;">Sync Lecture Prep</th>
-<th style="width: 8%;">Sync Activities Prep</th>
-<th style="width: 8%;">Sync Assessment Prep</th>
-<th style="width: 8%;">Async Lecture</th>
-<th style="width: 8%;">Async Activities</th>
-<th style="width: 8%;">Async Assessment</th>
-<th style="width: 8%;">Async Lecture Prep</th>
-<th style="width: 8%;">Async Activities Prep</th>
-<th style="width: 8%;">Async Assessment Prep</th>
-
+        <script>
+            for (let i = 1; i <= 15; i++) {
+                document.write(`<tr><td>Week ${i}</td>`);
+                for (let j = 0; j < 12; j++) {
+                    document.write(`<td><input type="number" id="week${i}-col${j}" oninput="calculateWeeklyTotal()"></td>`);
+                }
+                document.write(`</tr>`);
+            }
+        </script>
     </table>
     
     <footer>
