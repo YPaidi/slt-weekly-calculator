@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +19,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
         }
         select, input {
@@ -50,7 +49,7 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            max-width: 600px;
             margin: 20px auto;
         }
         img {
@@ -58,6 +57,27 @@
             height: auto;
             border-radius: 10px;
             margin-top: 10px;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .warning {
+            color: red;
+            font-weight: bold;
+            display: none;
         }
         footer {
             margin-top: 20px;
@@ -78,10 +98,32 @@
                 document.getElementById("result").innerHTML = 
                     "<h2>Results</h2>" +
                     "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
-                    "<p style='color: red;'>" + data.warning + "</p>" +
+                    "<p class='warning' id='sltWarning'>" + data.warning + "</p>" +
                     "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
             })
             .catch(error => console.error('Error:', error));
+        }
+
+        function calculateSLTTotal() {
+            let totalSLT = 0;
+            let sltType = document.getElementById("slt_type").value;
+            let maxSLT = sltType === "80" ? 80 : (sltType === "120" ? 120 : 160);
+            let warning = document.getElementById("weekWarning");
+
+            for (let i = 1; i <= 15; i++) {
+                for (let j = 1; j <= 12; j++) {
+                    let input = document.getElementById(`week${i}-activity${j}`);
+                    totalSLT += Number(input.value) || 0;
+                }
+            }
+
+            document.getElementById("sltTotalDisplay").innerText = `Total SLT Allocated: ${totalSLT} hours`;
+            if (totalSLT !== maxSLT) {
+                warning.style.display = "block";
+                warning.innerText = `Warning: Total SLT should be exactly ${maxSLT} hours!`;
+            } else {
+                warning.style.display = "none";
+            }
         }
     </script>
 </head>
@@ -90,38 +132,57 @@
 
     <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
         <label for="slt_type"><strong>Select SLT Version:</strong></label>
-        <select name="slt_type">
+        <select id="slt_type" name="slt_type" onchange="calculateSLTTotal()">
             <option value="80">80 Hours</option>
             <option value="120">120 Hours</option>
             <option value="160">160 Hours</option>
         </select>
-
-        <h3>Synchronous Learning</h3>
-        <label>Lecture: <input type="number" name="synchronous_lecture" required></label>
-        <label>Activities: <input type="number" name="synchronous_activities" required></label>
-        <label>Assessment: <input type="number" name="synchronous_assessment" required></label>
-
-        <h3>Asynchronous Learning</h3>
-        <label>Lecture: <input type="number" name="asynchronous_lecture" required></label>
-        <label>Activities: <input type="number" name="asynchronous_activities" required></label>
-        <label>Assessment: <input type="number" name="asynchronous_assessment" required></label>
-
-        <h3>Preparation Time</h3>
-        <label>Synchronous Lecture: <input type="number" name="synchronous_lecture_prep" required></label>
-        <label>Synchronous Activities: <input type="number" name="synchronous_activities_prep" required></label>
-        <label>Synchronous Assessment: <input type="number" name="synchronous_assessment_prep" required></label>
-        
-        <label>Asynchronous Lecture: <input type="number" name="asynchronous_lecture_prep" required></label>
-        <label>Asynchronous Activities: <input type="number" name="asynchronous_activities_prep" required></label>
-        <label>Asynchronous Assessment: <input type="number" name="asynchronous_assessment_prep" required></label>
 
         <button type="submit">Calculate</button>
     </form>
 
     <div id="result"></div>
 
-<footer>
-    <p>Developed by [Rohayati Paidi]</p>
-</footer>
+    <h2>SLT Weekly Arrangement</h2>
+    <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
+    <p class="warning" id="weekWarning"></p>
+
+    <table>
+        <tr>
+            <th>Week</th>
+            <th colspan="12">SLT Activities (Enter Hours)</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Lecture</th>
+            <th>Activities</th>
+            <th>Assessment</th>
+            <th>Lecture Prep</th>
+            <th>Activity Prep</th>
+            <th>Assessment Prep</th>
+            <th>Async Lecture</th>
+            <th>Async Activities</th>
+            <th>Async Assessment</th>
+            <th>Async Lecture Prep</th>
+            <th>Async Activities Prep</th>
+            <th>Async Assessment Prep</th>
+        </tr>
+
+        <!-- 14 weeks + final exam -->
+        <script>
+            for (let i = 1; i <= 15; i++) {
+                document.write("<tr>");
+                document.write(`<td>Week ${i}</td>`);
+                for (let j = 1; j <= 12; j++) {
+                    document.write(`<td><input type="number" id="week${i}-activity${j}" oninput="calculateSLTTotal()" min="0"></td>`);
+                }
+                document.write("</tr>");
+            }
+        </script>
+    </table>
+
+    <footer>
+        <p>Developed by Rohayati Paidi</p>
+    </footer>
 </body>
 </html>
