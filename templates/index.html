@@ -11,92 +11,61 @@
             text-align: center;
             padding: 20px;
         }
-        h1, h2 {
+        h1 {
             color: #333;
         }
-        form {
+        .container {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
+            text-align: left;
         }
-        label, select, input {
-            display: inline-block;
-            width: 90%;
+        select, input {
+            width: calc(100% - 20px);
             padding: 8px;
             margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 14px;
-            text-align: center;
+            font-size: 16px;
         }
         button {
             background-color: #28a745;
             color: white;
-            font-size: 16px;
-            padding: 10px 15px;
+            font-size: 18px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
             transition: background 0.3s ease;
         }
         button:hover {
             background-color: #218838;
         }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            margin: 20px auto;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
+        .section-title {
+            font-weight: bold;
             margin-top: 10px;
         }
-        table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        th, td {
-            padding: 8px;
-            border: 1px solid #ddd;
+        .form-group label {
+            width: 60%;
+        }
+        .form-group input {
+            width: 35%;
             text-align: center;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        input[type="number"] {
-            width: 80%;
-            padding: 5px;
-            font-size: 14px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        .valid {
-            background-color: #a8e6a3;
-        }
-        footer {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
         }
     </style>
-<script>
+
+    <script>
         function submitForm() {
             let formData = new FormData(document.getElementById("sltForm"));
             fetch("/", {
@@ -108,93 +77,23 @@
                 document.getElementById("result").innerHTML = 
                     "<h2>Results</h2>" +
                     "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
-                    "<p class='warning' id='sltWarning'>" + data.warning + "</p>" +
                     "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
             })
             .catch(error => console.error('Error:', error));
         }
-
-        function calculateSLTTotal() {
-            let totalSLT = 0;
-            let sltType = document.getElementById("slt_type").value;
-            let maxSLT = sltType === "80" ? 80 : (sltType === "120" ? 120 : 160);
-            let warning = document.getElementById("weekWarning");
-
-            for (let i = 1; i <= 15; i++) {
-                for (let j = 1; j <= 12; j++) {
-                    let input = document.getElementById(`week${i}-activity${j}`);
-                    totalSLT += Number(input.value) || 0;
-                }
-            }
-
-            document.getElementById("sltTotalDisplay").innerText = `Total SLT Allocated: ${totalSLT} hours`;
-            if (totalSLT !== maxSLT) {
-                warning.style.display = "block";
-                warning.innerText = `Warning: Total SLT should be exactly ${maxSLT} hours!`;
-            } else {
-                warning.style.display = "none";
-            }
-        }
-    </script></head>
+    </script>
+</head>
 <body>
     <h1>SLT Calculator</h1>
     <p>Select the SLT version and enter the total hours for each activity type.</p>
 
-    <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
-        <label for="slt_type"><strong>Select SLT Version:</strong></label>
-        <select name="slt_type">
-            <option value="80">80 Hours</option>
-            <option value="120">120 Hours</option>
-            <option value="160">160 Hours</option>
-        </select>
-        <label>Lecture: <input type="number" name="synchronous_lecture"></label>
-        <label>Activities: <input type="number" name="synchronous_activities"></label>
-        <label>Assessment: <input type="number" name="synchronous_assessment"></label>
-        <label>Preparation: <input type="number" name="synchronous_prep"></label>
-        <button type="submit">Calculate</button>
-    </form>
-    
-    <div id="result"></div>
-    
-    <h2>SLT Weekly Arrangement</h2>
-    <table>
-        <tr>
-            <th>Week</th>
-            <th>Lecture</th>
-            <th>Activities</th>
-            <th>Assessment</th>
-            <th>Lecture Prep</th>
-            <th>Activity Prep</th>
-            <th>Assessment Prep</th>
-            <th>Async Lecture</th>
-            <th>Async Activities</th>
-            <th>Async Assessment</th>
-            <th>Async Lecture Prep</th>
-            <th>Async Activities Prep</th>
-            <th>Async Assessment Prep</th>
-        </tr>
-        <script>
-            for (let i = 1; i <= 15; i++) {
-                document.write("<tr>");
-                document.write(`<td>Week ${i}</td>`);
-                for (let j = 1; j <= 12; j++) {
-                    document.write(`<td><input type='number' id='week${i}-activity${j}' oninput='calculateSLTTotal()'></td>`);
-                }
-                document.write("</tr>");
-            }
-        </script>
-        <tr>
-            <td><strong>Total</strong></td>
-            <script>
-                for (let j = 1; j <= 12; j++) {
-                    document.write(`<td id='total-activity${j}'>0</td>`);
-                }
-            </script>
-        </tr>
-    </table>
-    
-    <footer>
-        <p>Developed by Rohayati Paidi</p>
-    </footer>
-</body>
-</html>
+    <div class="container">
+        <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
+            <label for="slt_type"><strong>Select SLT Version:</strong></label>
+            <select name="slt_type">
+                <option value="80">80 Hours</option>
+                <option value="120">120 Hours</option>
+                <option value="160">160 Hours</option>
+            </select>
+
+            <div class="section-ti
