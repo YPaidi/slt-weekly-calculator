@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLT Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        select, input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+
+    <script>
+        function submitForm() {
+            let formData = new FormData(document.getElementById("sltForm"));
+            fetch("/", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerHTML = 
+                    "<h2>Results</h2>" +
+                    "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
+                    "<p style='color: red;'>" + data.warning + "</p>" +
+                    "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>SLT Calculator</h1>
+
+    <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
+        <label for="slt_type"><strong>Select SLT Version:</strong></label>
+        <select name="slt_type">
+            <option value="80">80 Hours</option>
+            <option value="120">120 Hours</option>
+            <option value="160">160 Hours</option>
+        </select>
+
+        <h3>Synchronous Learning</h3>
+        <label>Lecture: <input type="number" name="synchronous_lecture" required></label>
+        <label>Activities: <input type="number" name="synchronous_activities" required></label>
+        <label>Assessment: <input type="number" name="synchronous_assessment" required></label>
+
+        <h3>Asynchronous Learning</h3>
+        <label>Lecture: <input type="number" name="asynchronous_lecture" required></label>
+        <label>Activities: <input type="number" name="asynchronous_activities" required></label>
+        <label>Assessment: <input type="number" name="asynchronous_assessment" required></label>
+
+        <h3>Preparation Time</h3>
+        <label>Synchronous Lecture: <input type="number" name="synchronous_lecture_prep" required></label>
+        <label>Synchronous Activities: <input type="number" name="synchronous_activities_prep" required></label>
+        <label>Synchronous Assessment: <input type="number" name="synchronous_assessment_prep" required></label>
+        
+        <label>Asynchronous Lecture: <input type="number" name="asynchronous_lecture_prep" required></label>
+        <label>Asynchronous Activities: <input type="number" name="asynchronous_activities_prep" required></label>
+        <label>Asynchronous Assessment: <input type="number" name="asynchronous_assessment_prep" required></label>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    <div id="result"></div>
+
+<footer>
+    <p>{{ developer_name }}</p>
+</footer>
+</body>
+</html>
