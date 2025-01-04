@@ -14,148 +14,109 @@
         h1 {
             color: #333;
         }
-        .container {
-            background: #fff;
-            padding: 20px;
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: left;
         }
-        select, input {
-            width: calc(100% - 20px);
-            padding: 8px;
-            margin: 5px 0;
+        th, td {
             border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            font-size: 18px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            margin-top: 10px;
-            transition: background 0.3s ease;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .section-title {
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .form-group label {
-            width: 60%;
-        }
-        .form-group input {
-            width: 35%;
+            padding: 8px;
             text-align: center;
         }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        input[type="number"] {
+            width: 60px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .match {
+            background-color: #28a745;
+            color: white;
+        }
     </style>
-
     <script>
-        function submitForm() {
-            let formData = new FormData(document.getElementById("sltForm"));
-            fetch("/", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("result").innerHTML = 
-                    "<h2>Results</h2>" +
-                    "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
-                    "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
-            })
-            .catch(error => console.error('Error:', error));
+        function calculateWeeklyTotal() {
+            let totalColumns = 12;
+            let totalRows = 15;
+            let expectedTotals = {
+                lecture: parseInt(document.getElementById("lectureTotal").value) || 0,
+                activities: parseInt(document.getElementById("activitiesTotal").value) || 0,
+                assessment: parseInt(document.getElementById("assessmentTotal").value) || 0,
+                sync_lecture_prep: parseInt(document.getElementById("syncLecturePrepTotal").value) || 0,
+                sync_activities_prep: parseInt(document.getElementById("syncActivitiesPrepTotal").value) || 0,
+                sync_assessment_prep: parseInt(document.getElementById("syncAssessmentPrepTotal").value) || 0,
+                async_lecture: parseInt(document.getElementById("asyncLectureTotal").value) || 0,
+                async_activities: parseInt(document.getElementById("asyncActivitiesTotal").value) || 0,
+                async_assessment: parseInt(document.getElementById("asyncAssessmentTotal").value) || 0,
+                async_lecture_prep: parseInt(document.getElementById("asyncLecturePrepTotal").value) || 0,
+                async_activities_prep: parseInt(document.getElementById("asyncActivitiesPrepTotal").value) || 0,
+                async_assessment_prep: parseInt(document.getElementById("asyncAssessmentPrepTotal").value) || 0
+            };
+            
+            let columnSums = new Array(totalColumns).fill(0);
+            for (let i = 1; i <= totalRows; i++) {
+                for (let j = 0; j < totalColumns; j++) {
+                    let cellValue = parseInt(document.getElementById(`week${i}-col${j}`).value) || 0;
+                    columnSums[j] += cellValue;
+                }
+            }
+            
+            for (let j = 0; j < totalColumns; j++) {
+                let totalCell = document.getElementById(`total-col${j}`);
+                totalCell.textContent = columnSums[j];
+                totalCell.classList.toggle("match", columnSums[j] === expectedTotals[Object.keys(expectedTotals)[j]]);
+            }
         }
     </script>
 </head>
 <body>
-    <h1>SLT Calculator</h1>
-    <p>Select the SLT version and enter the total hours for each activity type.</p>
-
-    <div class="container">
-        <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
-            <label for="slt_type"><strong>Select SLT Version:</strong></label>
-            <select name="slt_type">
-                <option value="80">80 Hours</option>
-                <option value="120">120 Hours</option>
-                <option value="160">160 Hours</option>
-            </select>
-
-            <div class="section-title">Synchronous Learning</div>
-            <div class="form-group">
-                <label>Lecture:</label> 
-                <input type="number" name="synchronous_lecture" required>
-            </div>
-            <div class="form-group">
-                <label>Activities:</label> 
-                <input type="number" name="synchronous_activities" required>
-            </div>
-            <div class="form-group">
-                <label>Assessment:</label> 
-                <input type="number" name="synchronous_assessment" required>
-            </div>
-
-            <div class="section-title">Asynchronous Learning</div>
-            <div class="form-group">
-                <label>Lecture:</label> 
-                <input type="number" name="asynchronous_lecture" required>
-            </div>
-            <div class="form-group">
-                <label>Activities:</label> 
-                <input type="number" name="asynchronous_activities" required>
-            </div>
-            <div class="form-group">
-                <label>Assessment:</label> 
-                <input type="number" name="asynchronous_assessment" required>
-            </div>
-
-            <div class="section-title">Preparation Time</div>
-            <div class="form-group">
-                <label>Synchronous Lecture:</label> 
-                <input type="number" name="synchronous_lecture_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Synchronous Activities:</label> 
-                <input type="number" name="synchronous_activities_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Synchronous Assessment:</label> 
-                <input type="number" name="synchronous_assessment_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Asynchronous Lecture:</label> 
-                <input type="number" name="asynchronous_lecture_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Asynchronous Activities:</label> 
-                <input type="number" name="asynchronous_activities_prep" required>
-            </div>
-            <div class="form-group">
-                <label>Asynchronous Assessment:</label> 
-                <input type="number" name="asynchronous_assessment_prep" required>
-            </div>
-
-            <button type="submit">Calculate</button>
-        </form>
-    </div>
-
-    <div id="result"></div>
-
+    <h2>SLT Weekly Arrangement</h2>
+    <p>Total SLT Allocated: 0 hours</p>
+    <table>
+        <tr>
+            <th>Week</th>
+            <th>Lecture</th>
+            <th>Activities</th>
+            <th>Assessment</th>
+            <th>Sync Lecture Prep</th>
+            <th>Sync Activities Prep</th>
+            <th>Sync Assessment Prep</th>
+            <th>Async Lecture</th>
+            <th>Async Activities</th>
+            <th>Async Assessment</th>
+            <th>Async Lecture Prep</th>
+            <th>Async Activities Prep</th>
+            <th>Async Assessment Prep</th>
+        </tr>
+        <script>
+            for (let i = 1; i <= 15; i++) {
+                document.write(`<tr><td>Week ${i}</td>`);
+                for (let j = 0; j < 12; j++) {
+                    document.write(`<td><input type="number" id="week${i}-col${j}" oninput="calculateWeeklyTotal()"></td>`);
+                }
+                document.write(`</tr>`);
+            }
+        </script>
+        <tr>
+            <td><strong>Total</strong></td>
+            <script>
+                for (let j = 0; j < 12; j++) {
+                    document.write(`<td id="total-col${j}">0</td>`);
+                }
+            </script>
+        </tr>
+    </table>
+    
     <footer>
         <p>Developed by Rohayati Paidi</p>
     </footer>
