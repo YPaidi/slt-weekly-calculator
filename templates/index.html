@@ -47,7 +47,7 @@
             background-color: #28a745;
             color: white;
             font-size: 16px;
-            padding: 10px 20px;
+            padding: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -113,6 +113,8 @@
                     "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
                     "<p style='color: red;'>" + data.warning + "</p>" +
                     "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
+
+                document.getElementById("weeklyTableContainer").style.display = "block";
             })
             .catch(error => console.error('Error:', error));
         }
@@ -171,18 +173,38 @@
         <div class="input-group"><label>Activities:</label> <input type="number" name="asynchronous_activities" required></div>
         <div class="input-group"><label>Assessment:</label> <input type="number" name="asynchronous_assessment" required></div>
 
-        <h2>Preparation Time</h2>
-        <div class="input-group"><label>Synchronous Lecture Prep:</label> <input type="number" name="synchronous_lecture_prep" required></div>
-        <div class="input-group"><label>Synchronous Activities Prep:</label> <input type="number" name="synchronous_activities_prep" required></div>
-        <div class="input-group"><label>Synchronous Assessment Prep:</label> <input type="number" name="synchronous_assessment_prep" required></div>
-        <div class="input-group"><label>Asynchronous Lecture Prep:</label> <input type="number" name="asynchronous_lecture_prep" required></div>
-        <div class="input-group"><label>Asynchronous Activities Prep:</label> <input type="number" name="asynchronous_activities_prep" required></div>
-        <div class="input-group"><label>Asynchronous Assessment Prep:</label> <input type="number" name="asynchronous_assessment_prep" required></div>
-
         <button type="submit">Calculate</button>
     </form>
 
     <div id="result"></div>
+
+    <div id="weeklyTableContainer" style="display:none;">
+        <h2>SLT Weekly Arrangement</h2>
+        <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
+
+        <table>
+            <tr>
+                <th>Week</th>
+                <th colspan="12">SLT Activities (Enter Hours)</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Lecture</th>
+                <th>Activities</th>
+                <th>Assessment</th>
+                <th>Lecture Prep</th>
+                <th>Activity Prep</th>
+                <th>Assessment Prep</th>
+                <th>Async Lecture</th>
+                <th>Async Activities</th>
+                <th>Async Assessment</th>
+                <th>Async Lecture Prep</th>
+                <th>Async Activities Prep</th>
+                <th>Async Assessment Prep</th>
+            </tr>
+            <tbody id="weeklyTable"></tbody>
+        </table>
+    </div>
 
     <footer>Developed by Rohayati Paidi</footer>
 </body>
