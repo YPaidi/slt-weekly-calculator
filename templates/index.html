@@ -65,24 +65,82 @@
         }
     </style>
 
-    <script>
-        function submitForm() {
-            let formData = new FormData(document.getElementById("sltForm"));
-            fetch("/", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("result").innerHTML = 
-                    "<h2>Results</h2>" +
-                    "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
-                    "<p style='color: red;'>" + data.warning + "</p>" +
-                    "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
-            })
-            .catch(error => console.error('Error:', error));
+   <script>
+    function submitForm() {
+        let formData = new FormData(document.getElementById("sltForm"));
+        fetch("/", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("result").innerHTML = 
+                "<h2>Results</h2>" +
+                "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
+                "<p style='color: red;'>" + data.warning + "</p>" +
+                "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function calculateSLTTotal() {
+        let totalSLT = 0;
+        let activityTotals = new Array(12).fill(0); // Store total for each activity type
+        let sltType = document.querySelector("select[name='slt_type']").value;
+        let maxSLT = sltType === "80" ? 80 : (sltType === "120" ? 120 : 160);
+        let warning = document.getElementById("weekWarning");
+
+        // Loop through each week and activity type
+        for (let i = 1; i <= 15; i++) {
+            for (let j = 1; j <= 12; j++) {
+                let input = document.getElementById(`week${i}-activity${j}`);
+                let value = Number(input.value) || 0;
+                totalSLT += value;
+                activityTotals[j - 1] += value;
+            }
         }
-    </script>
+
+        // Update the total display
+        document.getElementById("sltTotalDisplay").innerText = `Total SLT Allocated: ${totalSLT} hours`;
+
+        // Check if total SLT matches selected version
+        if (totalSLT !== maxSLT) {
+            warning.style.display = "block";
+            warning.innerText = `⚠️ Warning: Total SLT should be exactly ${maxSLT} hours!`;
+        } else {
+            warning.style.display = "none";
+        }
+
+        // **Validation for each type of activity**
+        let formData = new FormData(document.getElementById("sltForm"));
+        let expectedTotals = [
+            Number(formData.get('synchronous_lecture')) || 0,
+            Number(formData.get('synchronous_activities')) || 0,
+            Number(formData.get('synchronous_assessment')) || 0,
+            Number(formData.get('synchronous_lecture_prep')) || 0,
+            Number(formData.get('synchronous_activities_prep')) || 0,
+            Number(formData.get('synchronous_assessment_prep')) || 0,
+            Number(formData.get('asynchronous_lecture')) || 0,
+            Number(formData.get('asynchronous_activities')) || 0,
+            Number(formData.get('asynchronous_assessment')) || 0,
+            Number(formData.get('asynchronous_lecture_prep')) || 0,
+            Number(formData.get('asynchronous_activities_prep')) || 0,
+            Number(formData.get('asynchronous_assessment_prep')) || 0
+        ];
+
+        let activityWarning = document.getElementById("activityWarning");
+        activityWarning.innerHTML = ""; // Clear previous warnings
+
+        for (let i = 0; i < 12; i++) {
+            if (activityTotals[i] !== expectedTotals[i]) {
+                let activityName = document.querySelectorAll("th")[i + 1].innerText;
+                let msg = `⚠️ Mismatch: Total for **${activityName}** should be **${expectedTotals[i]} hours**, but you entered **${activityTotals[i]} hours**.`;
+                activityWarning.innerHTML += `<p style="color: red; font-weight: bold;">${msg}</p>`;
+            }
+        }
+    }
+</script>
+
 </head>
 <body>
     <h1>SLT Calculator</h1>
@@ -122,6 +180,8 @@
 <h2>SLT Weekly Arrangement</h2>
 <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
 <p class="warning" id="weekWarning"></p>
+
+<p class="warning" id="activityWarning"></p>
 
 <table>
     <tr>
