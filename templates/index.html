@@ -65,7 +65,7 @@
         }
     </style>
 
-   <script>
+<script>
     function submitForm() {
         let formData = new FormData(document.getElementById("sltForm"));
         fetch("/", {
@@ -100,44 +100,25 @@
             }
         }
 
-        // Update the total display
+        // Update the total SLT display
         document.getElementById("sltTotalDisplay").innerText = `Total SLT Allocated: ${totalSLT} hours`;
 
-        // Check if total SLT matches selected version
-        if (totalSLT !== maxSLT) {
-            warning.style.display = "block";
-            warning.innerText = `⚠️ Warning: Total SLT should be exactly ${maxSLT} hours!`;
-        } else {
-            warning.style.display = "none";
-        }
+        // Check if total SLT matches the selected version
+        warning.style.display = totalSLT !== maxSLT ? "block" : "none";
+        warning.innerText = totalSLT !== maxSLT ? `⚠️ Warning: Total SLT should be exactly ${maxSLT} hours!` : "";
 
-        // **Validation for each type of activity**
-        let formData = new FormData(document.getElementById("sltForm"));
-        let expectedTotals = [
-            Number(formData.get('synchronous_lecture')) || 0,
-            Number(formData.get('synchronous_activities')) || 0,
-            Number(formData.get('synchronous_assessment')) || 0,
-            Number(formData.get('synchronous_lecture_prep')) || 0,
-            Number(formData.get('synchronous_activities_prep')) || 0,
-            Number(formData.get('synchronous_assessment_prep')) || 0,
-            Number(formData.get('asynchronous_lecture')) || 0,
-            Number(formData.get('asynchronous_activities')) || 0,
-            Number(formData.get('asynchronous_assessment')) || 0,
-            Number(formData.get('asynchronous_lecture_prep')) || 0,
-            Number(formData.get('asynchronous_activities_prep')) || 0,
-            Number(formData.get('asynchronous_assessment_prep')) || 0
-        ];
+        // **Display total sum for each column**
+        let activityTotalsDisplay = document.getElementById("activityTotals");
+        activityTotalsDisplay.innerHTML = "<h3>SLT Summary</h3><ul>";
 
-        let activityWarning = document.getElementById("activityWarning");
-        activityWarning.innerHTML = ""; // Clear previous warnings
+        let activityLabels = ["Lecture", "Activities", "Assessment", "Lecture Prep", "Activity Prep", "Assessment Prep",
+            "Async Lecture", "Async Activities", "Async Assessment", "Async Lecture Prep", "Async Activities Prep", "Async Assessment Prep"];
 
         for (let i = 0; i < 12; i++) {
-            if (activityTotals[i] !== expectedTotals[i]) {
-                let activityName = document.querySelectorAll("th")[i + 1].innerText;
-                let msg = `⚠️ Mismatch: Total for **${activityName}** should be **${expectedTotals[i]} hours**, but you entered **${activityTotals[i]} hours**.`;
-                activityWarning.innerHTML += `<p style="color: red; font-weight: bold;">${msg}</p>`;
-            }
+            activityTotalsDisplay.innerHTML += `<li><strong>${activityLabels[i]}:</strong> ${activityTotals[i]} hours</li>`;
         }
+
+        activityTotalsDisplay.innerHTML += "</ul>";
     }
 </script>
 
@@ -217,6 +198,8 @@
     </script>
 </table>
     
+<div id="activityTotals"></div>
+
 <footer>
     <p>{{ developer_name }}</p>
 </footer>
