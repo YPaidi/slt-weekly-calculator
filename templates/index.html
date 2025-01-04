@@ -119,6 +119,44 @@
 
     <div id="result"></div>
 
+<h2>SLT Weekly Arrangement</h2>
+<p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
+<p class="warning" id="weekWarning"></p>
+
+<table>
+    <tr>
+        <th>Week</th>
+        <th colspan="12">SLT Activities (Enter Hours)</th>
+    </tr>
+    <tr>
+        <th></th>
+        <th>Lecture</th>
+        <th>Activities</th>
+        <th>Assessment</th>
+        <th>Lecture Prep</th>
+        <th>Activity Prep</th>
+        <th>Assessment Prep</th>
+        <th>Async Lecture</th>
+        <th>Async Activities</th>
+        <th>Async Assessment</th>
+        <th>Async Lecture Prep</th>
+        <th>Async Activities Prep</th>
+        <th>Async Assessment Prep</th>
+    </tr>
+
+    <!-- 14 weeks + final exam -->
+    <script>
+        for (let i = 1; i <= 15; i++) {
+            document.write("<tr>");
+            document.write(`<td>Week ${i}</td>`);
+            for (let j = 1; j <= 12; j++) {
+                document.write(`<td><input type="number" id="week${i}-activity${j}" oninput="calculateSLTTotal()" min="0"></td>`);
+            }
+            document.write("</tr>");
+        }
+    </script>
+</table>
+    
 <footer>
     <p>{{ developer_name }}</p>
 </footer>
