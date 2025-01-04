@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLT Calculator</title>
@@ -14,18 +15,19 @@
         h1 {
             color: #333;
         }
-        form {
+        .container {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
+            text-align: left;
         }
         select, input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
@@ -38,81 +40,120 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
             transition: background 0.3s ease;
         }
         button:hover {
             background-color: #218838;
         }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            margin: 20px auto;
+        .section-title {
+            font-weight: bold;
+            margin-top: 10px;
         }
-        table {
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        .form-group label {
+            width: 60%;
+        }
+        .form-group input {
+            width: 35%;
             text-align: center;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        input[type="number"] {
-            width: 60px;
-            text-align: center;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .match {
-            background-color: #28a745;
-            color: white;
         }
     </style>
+
+    <script>
+        function submitForm() {
+            let formData = new FormData(document.getElementById("sltForm"));
+            fetch("/", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerHTML = 
+                    "<h2>Results</h2>" +
+                    "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
+                    "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </head>
 <body>
     <h1>SLT Calculator</h1>
-    <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
-        <label for="slt_type"><strong>Select SLT Version:</strong></label>
-        <select name="slt_type">
-            <option value="80">80 Hours</option>
-            <option value="120">120 Hours</option>
-            <option value="160">160 Hours</option>
-        </select>
+    <p>Select the SLT version and enter the total hours for each activity type.</p>
 
-        <h3>Synchronous Learning</h3>
-        <label>Lecture: <input type="number" name="synchronous_lecture" required></label>
-        <label>Activities: <input type="number" name="synchronous_activities" required></label>
-        <label>Assessment: <input type="number" name="synchronous_assessment" required></label>
+    <div class="container">
+        <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
+            <label for="slt_type"><strong>Select SLT Version:</strong></label>
+            <select name="slt_type">
+                <option value="80">80 Hours</option>
+                <option value="120">120 Hours</option>
+                <option value="160">160 Hours</option>
+            </select>
 
-        <h3>Asynchronous Learning</h3>
-        <label>Lecture: <input type="number" name="asynchronous_lecture" required></label>
-        <label>Activities: <input type="number" name="asynchronous_activities" required></label>
-        <label>Assessment: <input type="number" name="asynchronous_assessment" required></label>
+            <div class="section-title">Synchronous Learning</div>
+            <div class="form-group">
+                <label>Lecture:</label> 
+                <input type="number" name="synchronous_lecture" required>
+            </div>
+            <div class="form-group">
+                <label>Activities:</label> 
+                <input type="number" name="synchronous_activities" required>
+            </div>
+            <div class="form-group">
+                <label>Assessment:</label> 
+                <input type="number" name="synchronous_assessment" required>
+            </div>
 
-        <h3>Preparation Time</h3>
-        <label>Synchronous Lecture: <input type="number" name="synchronous_lecture_prep" required></label>
-        <label>Synchronous Activities: <input type="number" name="synchronous_activities_prep" required></label>
-        <label>Synchronous Assessment: <input type="number" name="synchronous_assessment_prep" required></label>
-        <label>Asynchronous Lecture: <input type="number" name="asynchronous_lecture_prep" required></label>
-        <label>Asynchronous Activities: <input type="number" name="asynchronous_activities_prep" required></label>
-        <label>Asynchronous Assessment: <input type="number" name="asynchronous_assessment_prep" required></label>
+            <div class="section-title">Asynchronous Learning</div>
+            <div class="form-group">
+                <label>Lecture:</label> 
+                <input type="number" name="asynchronous_lecture" required>
+            </div>
+            <div class="form-group">
+                <label>Activities:</label> 
+                <input type="number" name="asynchronous_activities" required>
+            </div>
+            <div class="form-group">
+                <label>Assessment:</label> 
+                <input type="number" name="asynchronous_assessment" required>
+            </div>
 
-        <button type="submit">Calculate</button>
-    </form>
+            <div class="section-title">Preparation Time</div>
+            <div class="form-group">
+                <label>Synchronous Lecture:</label> 
+                <input type="number" name="synchronous_lecture_prep" required>
+            </div>
+            <div class="form-group">
+                <label>Synchronous Activities:</label> 
+                <input type="number" name="synchronous_activities_prep" required>
+            </div>
+            <div class="form-group">
+                <label>Synchronous Assessment:</label> 
+                <input type="number" name="synchronous_assessment_prep" required>
+            </div>
+            <div class="form-group">
+                <label>Asynchronous Lecture:</label> 
+                <input type="number" name="asynchronous_lecture_prep" required>
+            </div>
+            <div class="form-group">
+                <label>Asynchronous Activities:</label> 
+                <input type="number" name="asynchronous_activities_prep" required>
+            </div>
+            <div class="form-group">
+                <label>Asynchronous Assessment:</label> 
+                <input type="number" name="asynchronous_assessment_prep" required>
+            </div>
+
+            <button type="submit">Calculate</button>
+        </form>
+    </div>
 
     <div id="result"></div>
 
@@ -133,69 +174,8 @@
             <th>Async Activities Prep</th>
             <th>Async Assessment Prep</th>
         </tr>
-        <tbody id="weekly-table"></tbody>
-        <tr>
-            <td><strong>Summary</strong></td>
-            <td id="total-col0">0</td>
-            <td id="total-col1">0</td>
-            <td id="total-col2">0</td>
-            <td id="total-col3">0</td>
-            <td id="total-col4">0</td>
-            <td id="total-col5">0</td>
-            <td id="total-col6">0</td>
-            <td id="total-col7">0</td>
-            <td id="total-col8">0</td>
-            <td id="total-col9">0</td>
-            <td id="total-col10">0</td>
-            <td id="total-col11">0</td>
-        </tr>
     </table>
-
-    <script>
-        function submitForm() {
-            let formData = new FormData(document.getElementById("sltForm"));
-            fetch("/", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("result").innerHTML = 
-                    "<h2>Results</h2>" +
-                    "<p><strong>Total Asynchronous Hours:</strong> " + data.total_asynchronous + " hours</p>" +
-                    "<p style='color: red;'>" + data.warning + "</p>" +
-                    "<img id='sltGraph' src='data:image/png;base64," + data.graph_url + "'/>";
-            });
-        }
-
-        function generateWeeklyTable() {
-            let totalRows = 15;
-            let tableBody = document.getElementById("weekly-table");
-
-            for (let i = 1; i <= totalRows; i++) {
-                let row = document.createElement("tr");
-                let weekCell = document.createElement("td");
-                weekCell.innerText = `Week ${i}`;
-                row.appendChild(weekCell);
-
-                for (let j = 0; j < 12; j++) {
-                    let cell = document.createElement("td");
-                    let input = document.createElement("input");
-                    input.type = "number";
-                    input.oninput = calculateWeeklyTotal;
-                    cell.appendChild(input);
-                    row.appendChild(cell);
-                }
-
-                tableBody.appendChild(row);
-            }
-        }
-
-        window.onload = function() {
-            generateWeeklyTable();
-        };
-    </script>
-
+    
     <footer>
         <p>Developed by Rohayati Paidi</p>
     </footer>
