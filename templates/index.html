@@ -203,25 +203,32 @@
         }
     </style>
     <script>
-        function calculateWeeklyTotal() {
-    let totalColumns = 12;
-    let totalRows = 15;
-    let totalSLT = 0;
+function calculateWeeklyTotal() {
+    let totalColumns = 12; // Total number of columns (excluding "Week")
+    let totalRows = 15; // Weeks 1-15
 
     let columnSums = new Array(totalColumns).fill(0);
 
+    // Iterate over each row (week)
     for (let i = 1; i <= totalRows; i++) {
         for (let j = 0; j < totalColumns; j++) {
             let cell = document.getElementById(`week${i}-col${j}`);
-            let cellValue = parseInt(cell.value) || 0;
-
-            columnSums[j] += cellValue;
-            totalSLT += cellValue;
+            let value = parseInt(cell.value) || 0;
+            columnSums[j] += value;
         }
     }
 
-    // Update the "Total SLT Allocated" display
-    document.getElementById("totalSLTAllocated").textContent = `Total SLT Allocated: ${totalSLT} hours`;
+    // Update the total row dynamically
+    for (let j = 0; j < totalColumns; j++) {
+        let totalCell = document.getElementById(`total-col${j}`);
+        totalCell.textContent = columnSums[j];
+    }
+
+    // Update the total SLT Allocated at the top
+    let totalSLT = columnSums.reduce((a, b) => a + b, 0);
+    document.getElementById("sltTotalAllocated").textContent = `Total SLT Allocated: ${totalSLT} hours`;
+}
+
 
     // Update the total row at the bottom
     for (let j = 0; j < totalColumns; j++) {
@@ -233,42 +240,42 @@
     </script>
 </head>
 <body>
-    <h2>SLT Weekly Arrangement</h2>
-    <p>Total SLT Allocated: 0 hours</p>
-    <table>
-        <tr>
-            <th>Week</th>
-            <th>Lecture</th>
-            <th>Activities</th>
-            <th>Assessment</th>
-            <th>Sync Lecture Prep</th>
-            <th>Sync Activities Prep</th>
-            <th>Sync Assessment Prep</th>
-            <th>Async Lecture</th>
-            <th>Async Activities</th>
-            <th>Async Assessment</th>
-            <th>Async Lecture Prep</th>
-            <th>Async Activities Prep</th>
-            <th>Async Assessment Prep</th>
-        </tr>
+<h2>SLT Weekly Arrangement</h2>
+<p id="sltTotalAllocated">Total SLT Allocated: 0 hours</p>
+<table>
+    <tr>
+        <th>Week</th>
+        <th>Lecture</th>
+        <th>Activities</th>
+        <th>Assessment</th>
+        <th>Sync Lecture Prep</th>
+        <th>Sync Activities Prep</th>
+        <th>Sync Assessment Prep</th>
+        <th>Async Lecture</th>
+        <th>Async Activities</th>
+        <th>Async Assessment</th>
+        <th>Async Lecture Prep</th>
+        <th>Async Activities Prep</th>
+        <th>Async Assessment Prep</th>
+    </tr>
+    <script>
+        for (let i = 1; i <= 15; i++) {
+            document.write(`<tr><td>Week ${i}</td>`);
+            for (let j = 0; j < 12; j++) {
+                document.write(`<td><input type="number" id="week${i}-col${j}" oninput="calculateWeeklyTotal()"></td>`);
+            }
+            document.write(`</tr>`);
+        }
+    </script>
+    <tr>
+        <td><strong>Total</strong></td>
         <script>
-            for (let i = 1; i <= 15; i++) {
-                document.write(`<tr><td>Week ${i}</td>`);
-                for (let j = 0; j < 12; j++) {
-                    document.write(`<td><input type="number" id="week${i}-col${j}" oninput="calculateWeeklyTotal()"></td>`);
-                }
-                document.write(`</tr>`);
+            for (let j = 0; j < 12; j++) {
+                document.write(`<td id="total-col${j}">0</td>`);
             }
         </script>
-        <tr>
-            <td><strong>Total</strong></td>
-            <script>
-                for (let j = 0; j < 12; j++) {
-                    document.write(`<td id="total-col${j}">0</td>`);
-                }
-            </script>
-        </tr>
-    </table>
+    </tr>
+</table>
     
     <footer>
         <p>Developed by Rohayati Paidi</p>
