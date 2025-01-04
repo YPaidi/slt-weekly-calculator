@@ -204,37 +204,32 @@
     </style>
     <script>
         function calculateWeeklyTotal() {
-            let totalColumns = 12;
-            let totalRows = 15;
-            let expectedTotals = {
-                lecture: parseInt(document.getElementById("lectureTotal").value) || 0,
-                activities: parseInt(document.getElementById("activitiesTotal").value) || 0,
-                assessment: parseInt(document.getElementById("assessmentTotal").value) || 0,
-                sync_lecture_prep: parseInt(document.getElementById("syncLecturePrepTotal").value) || 0,
-                sync_activities_prep: parseInt(document.getElementById("syncActivitiesPrepTotal").value) || 0,
-                sync_assessment_prep: parseInt(document.getElementById("syncAssessmentPrepTotal").value) || 0,
-                async_lecture: parseInt(document.getElementById("asyncLectureTotal").value) || 0,
-                async_activities: parseInt(document.getElementById("asyncActivitiesTotal").value) || 0,
-                async_assessment: parseInt(document.getElementById("asyncAssessmentTotal").value) || 0,
-                async_lecture_prep: parseInt(document.getElementById("asyncLecturePrepTotal").value) || 0,
-                async_activities_prep: parseInt(document.getElementById("asyncActivitiesPrepTotal").value) || 0,
-                async_assessment_prep: parseInt(document.getElementById("asyncAssessmentPrepTotal").value) || 0
-            };
-            
-            let columnSums = new Array(totalColumns).fill(0);
-            for (let i = 1; i <= totalRows; i++) {
-                for (let j = 0; j < totalColumns; j++) {
-                    let cellValue = parseInt(document.getElementById(`week${i}-col${j}`).value) || 0;
-                    columnSums[j] += cellValue;
-                }
-            }
-            
-            for (let j = 0; j < totalColumns; j++) {
-                let totalCell = document.getElementById(`total-col${j}`);
-                totalCell.textContent = columnSums[j];
-                totalCell.classList.toggle("match", columnSums[j] === expectedTotals[Object.keys(expectedTotals)[j]]);
-            }
+    let totalColumns = 12;
+    let totalRows = 15;
+    let totalSLT = 0;
+
+    let columnSums = new Array(totalColumns).fill(0);
+
+    for (let i = 1; i <= totalRows; i++) {
+        for (let j = 0; j < totalColumns; j++) {
+            let cell = document.getElementById(`week${i}-col${j}`);
+            let cellValue = parseInt(cell.value) || 0;
+
+            columnSums[j] += cellValue;
+            totalSLT += cellValue;
         }
+    }
+
+    // Update the "Total SLT Allocated" display
+    document.getElementById("totalSLTAllocated").textContent = `Total SLT Allocated: ${totalSLT} hours`;
+
+    // Update the total row at the bottom
+    for (let j = 0; j < totalColumns; j++) {
+        let totalCell = document.getElementById(`total-col${j}`);
+        totalCell.textContent = columnSums[j];
+    }
+}
+
     </script>
 </head>
 <body>
