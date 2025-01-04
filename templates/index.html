@@ -36,7 +36,7 @@
         }
         .input-group input {
             flex: 1;
-            width: 50px;
+            width: 80px;
             padding: 6px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -163,35 +163,20 @@
             <option value="160">160 Hours</option>
         </select>
 
-        <div class="slt-container">
-            <div class="input-group">
-                <label>Lecture:</label> <input type="number" name="synchronous_lecture" required>
-            </div>
-            <div class="input-group">
-                <label>Activities:</label> <input type="number" name="synchronous_activities" required>
-            </div>
-            <div class="input-group">
-                <label>Assessment:</label> <input type="number" name="synchronous_assessment" required>
-            </div>
-        </div>
+        <h2>Synchronous Learning</h2>
+        <div class="input-group"><label>Lecture:</label> <input type="number" name="synchronous_lecture" required></div>
+        <div class="input-group"><label>Activities:</label> <input type="number" name="synchronous_activities" required></div>
+        <div class="input-group"><label>Assessment:</label> <input type="number" name="synchronous_assessment" required></div>
+
+        <h2>Asynchronous Learning</h2>
+        <div class="input-group"><label>Lecture:</label> <input type="number" name="asynchronous_lecture" required></div>
+        <div class="input-group"><label>Activities:</label> <input type="number" name="asynchronous_activities" required></div>
+        <div class="input-group"><label>Assessment:</label> <input type="number" name="asynchronous_assessment" required></div>
 
         <button type="submit">Calculate</button>
     </form>
 
     <div id="result"></div>
-
-    <h2>SLT Weekly Arrangement</h2>
-    <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
-
-    <table>
-        <tr>
-            <th>Week</th>
-            <th colspan="12">SLT Activities (Enter Hours)</th>
-        </tr>
-        <tr id="summaryRow">
-            <td><strong>Total</strong></td>
-        </tr>
-    </table>
 
     <footer>Developed by Rohayati Paidi</footer>
 </body>
