@@ -11,55 +11,32 @@
             text-align: center;
             padding: 20px;
         }
-        h1 {
+        h1, h2 {
             color: #333;
         }
-/* Adjust input boxes inside the table */
-input[type="number"] {
-    width: 80%;  /* Reduce width so it fits inside the column */
-    padding: 5px;
-    font-size: 14px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-/* Table layout fixes */
-table {
-    width: 100%;
-    table-layout: fixed; /* Ensures equal column distribution */
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: center;
-    word-wrap: break-word; /* Prevents text from overflowing */
-}
-
         form {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
         }
-        select, input {
+        label, select, input {
+            display: inline-block;
             width: 90%;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 8px;
+            margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
+            text-align: center;
         }
         button {
             background-color: #28a745;
             color: white;
-            font-size: 18px;
-            padding: 10px 20px;
+            font-size: 16px;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -74,7 +51,7 @@ th, td {
             background: white;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 500px;
             margin: 20px auto;
         }
         img {
@@ -84,11 +61,13 @@ th, td {
             margin-top: 10px;
         }
         table {
-            width: 90%;
-            margin: 20px auto;
+            width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
-            background: #fff;
+            margin-top: 20px;
+            background: white;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
         th, td {
             padding: 8px;
@@ -99,10 +78,17 @@ th, td {
             background-color: #007bff;
             color: white;
         }
-        .warning {
-            color: red;
-            font-weight: bold;
-            display: none;
+        input[type="number"] {
+            width: 80%;
+            padding: 5px;
+            font-size: 14px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .valid {
+            background-color: #a8e6a3;
         }
         footer {
             margin-top: 20px;
@@ -110,8 +96,7 @@ th, td {
             color: #666;
         }
     </style>
-
-    <script>
+<script>
         function submitForm() {
             let formData = new FormData(document.getElementById("sltForm"));
             fetch("/", {
@@ -150,35 +135,31 @@ th, td {
                 warning.style.display = "none";
             }
         }
-    </script>
-</head>
+    </script></head>
 <body>
     <h1>SLT Calculator</h1>
+    <p>Select the SLT version and enter the total hours for each activity type.</p>
 
     <form id="sltForm" onsubmit="event.preventDefault(); submitForm();">
         <label for="slt_type"><strong>Select SLT Version:</strong></label>
-        <select id="slt_type" name="slt_type" onchange="calculateSLTTotal()">
+        <select name="slt_type">
             <option value="80">80 Hours</option>
             <option value="120">120 Hours</option>
             <option value="160">160 Hours</option>
         </select>
-
+        <label>Lecture: <input type="number" name="synchronous_lecture"></label>
+        <label>Activities: <input type="number" name="synchronous_activities"></label>
+        <label>Assessment: <input type="number" name="synchronous_assessment"></label>
+        <label>Preparation: <input type="number" name="synchronous_prep"></label>
         <button type="submit">Calculate</button>
     </form>
-
+    
     <div id="result"></div>
-
+    
     <h2>SLT Weekly Arrangement</h2>
-    <p id="sltTotalDisplay">Total SLT Allocated: 0 hours</p>
-    <p class="warning" id="weekWarning"></p>
-
     <table>
         <tr>
             <th>Week</th>
-            <th colspan="12">SLT Activities (Enter Hours)</th>
-        </tr>
-        <tr>
-            <th></th>
             <th>Lecture</th>
             <th>Activities</th>
             <th>Assessment</th>
@@ -192,20 +173,26 @@ th, td {
             <th>Async Activities Prep</th>
             <th>Async Assessment Prep</th>
         </tr>
-
-        <!-- 14 weeks + final exam -->
         <script>
             for (let i = 1; i <= 15; i++) {
                 document.write("<tr>");
                 document.write(`<td>Week ${i}</td>`);
                 for (let j = 1; j <= 12; j++) {
-                    document.write(`<td><input type="number" id="week${i}-activity${j}" oninput="calculateSLTTotal()" min="0"></td>`);
+                    document.write(`<td><input type='number' id='week${i}-activity${j}' oninput='calculateSLTTotal()'></td>`);
                 }
                 document.write("</tr>");
             }
         </script>
+        <tr>
+            <td><strong>Total</strong></td>
+            <script>
+                for (let j = 1; j <= 12; j++) {
+                    document.write(`<td id='total-activity${j}'>0</td>`);
+                }
+            </script>
+        </tr>
     </table>
-
+    
     <footer>
         <p>Developed by Rohayati Paidi</p>
     </footer>
